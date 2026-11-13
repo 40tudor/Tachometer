@@ -1,0 +1,38 @@
+  IGNITION SYSTEM               ISOLATION STAGE                 MICROCONTROLLER              GAUGE OUTPUT STAGE
+ ==================      =============================      =======================      ==============================
+
+  Ignition Coil (-) ----+
+                        |
+                     [ 15kΩ ]  (2W Resistor)
+                        |
+                        +-------> [ 1 ]         [ 5 ] ----------> Pin D2 (Interrupt)
+                        |          (Anode)     (Collector)
+                     [1N4007]         4N25
+                    (Cathode UP)  Optocoupler
+                        |          (Cathode)   (Emitter)
+  Chassis Ground -------+-------> [ 2 ]         [ 4 ] ----+-----> Arduino GND
+                                                          |
+  12V Switched ---------+                                 |
+
+                        |                                 |
+               [ 12V-to-5V Buck ]                         |
+               [   Converter    ]                         |
+
+                        |                                 |
+                       5V --------------------------------+-----> Arduino 5V Pin
+                                                          |
+                                                          |       Pin D9 (PWM) --------+
+
+                                                          |                            |
+                                                          |                         [ 1kΩ ] (Filter Resistor)
+
+                                                          |                            |
+                                                          |                            +-------> [ 10kΩ Pot ] (Wiper/End)
+
+                                                          |                            |               |
+                                                          |                         [ 10µF ]     (Other End)
+
+                                                          |                        (Capacitor)         |
+                                                          |                            |               v
+                                                          +----------------------------+-------> Gauge (-)
+                                                                                                 Gauge (+) <--- (From Pot)
