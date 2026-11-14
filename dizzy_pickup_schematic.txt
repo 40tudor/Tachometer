@@ -36,3 +36,23 @@
                                                           |                            |               v
                                                           +----------------------------+-------> Gauge (-)
                                                                                                  Gauge (+) <--- (From Pot)
+
+
+
+  ARDUINO NANO              RC SMOOTHING FILTER              CALIBRATION POT              MOVING-COIL GAUGE
+ ==============          =========================      =========================      =======================
+
+  Pin D9 (PWM) ----------> [ 1kΩ Resistor ] ---+
+                                               |
+                                               +---------> [ Pin 1 ] (Left)
+
+                                               |               |
+                                            ( + )              +--- (Tie Together)
+                                         [ 10µF Cap ]          |
+                                            ( - )          [ Pin 2 ] (Middle Wiper)
+
+                                               |               |
+                                               |           [ Pin 3 ] (Right) -----------> Gauge (+)
+                                               |
+  Arduino GND ---------------------------------+----------------------------------------> Gauge (-)
+
