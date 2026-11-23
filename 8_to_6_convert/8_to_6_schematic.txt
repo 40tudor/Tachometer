@@ -1,0 +1,72 @@
+====================================================================================================
+     SUN FZ106N 8-CYLINDER TO 6-CYLINDER (3/4 FREQUENCY) ADAPTER SCHEMATIC
+====================================================================================================
+
+[1. POWER SUPPLY STAGE]
+-----------------------
+VEHICLE +12V (Switched Ignition) ───────┬──────────────────────────► TO TACH "IGNITION SWITCH" STUD
+       │                                │
+       ▼                                ▼
+  ──►|──  D2: 1N4007 Diode (Stripe toward U2 VIN)
+       │
+       ├────────────────────────┐
+       │                        ▼
+       │                      ──┴──
+       │                       / \   D3: P6KE18CA TVS Diode (Clamps voltage spikes >18V)
+       │                      /___\
+       │                        │
+       ▼                        │
+  ┌─────────┐                   │
+  │   VIN   │                   │
+  │ Pololu  │                   │
+  │ D24V7F5 │                   │
+  │  (U2)   │                   │
+  │GND  VOUT│                   │
+  └─┬────┬──┘                   │
+    │    │                      │
+    │    └──────────────────────┼───────────────────────► +5V RAIL (To Arduino "5V" Pin & R3)
+    │                           │
+    ▼                           ▼
+COMMON GROUND ◄─────────────────┴───────────────────────► TO TACH "GROUND" STUD & CHASSIS GND
+
+
+[2. INPUT & 12V SQUARE-WAVE OUTPUT STAGES]
+------------------------------------------
+                                                        +5V RAIL (from D24V7F5 VOUT)
+                                                           │
+                                                           ▼
+                                                     [ R3: 10kΩ ] (1/4W Pull-up)
+                                                           │
+                                                           ├────────► ARDUINO PIN 3 (8-Cyl In)
+                  ┌──────────┬──────────────────┬──────────┘
+                  │          │                  │
+                  │       ┌──┴──────────────────┴──┐                  ┌──────────────────┐
+VEHICLE COIL (-)  │       │  1 (Anode)     5 (Col) │                  │                  │
+       │          │       │                        │                  │  ARDUINO MICRO   │
+       ▼          │       │        U1: 4N35        │                  │                  │
+ [ R1: 4.7kΩ ]    │       │      Optocoupler       │                  │  5V ◄── (+5V)    │
+   (2W Res.)      │       │     (Pin 6 = Open)     │                  │  D3 ◄── (Pin 5)  │
+       │          │       │                        │                  │  D9 ──► (3/4 Out)│
+       ├──────────┘       │  2 (Cathode)   4 (Em)  │                  │ GND ─── (GND)    │
+       │                  └──┬──────────────────┬──┘                  └─────────┬────────┘
+       │                     │                  │                               │
+       │  ┌──────────────────┘                  │                               ▼
+       │  │                                     │                         [ R2: 1.0kΩ ]
+       ▼  │ (Stripe/Cathode                     ▼                           (Base Res.)
+     ──┴──┘  to Pin 1)                    COMMON GROUND                         │
+      / \    D1: 1N4007                                                         │
+     /___\   (Shunts negative spikes)                                           │
+       │                                      +12V (Switched Ignition)          │
+       ▼                                             │                          │
+COMMON GROUND                                  [ R4: 1.0kΩ ] (1/2W Pull-up)     │
+                                                     │                          │
+                                                     ├──────────────────► TO TACH "DIST." STUD
+                                                     │                          │
+                                                (Collector)                     │
+                                                     │                          ▼
+                                                     ├─────────(Base)─────── Q1: 2N3904
+                                                     │                       (NPN Transistor)
+                                                 (Emitter)
+                                                     │
+                                                     ▼
+                                               COMMON GROUND

@@ -1,51 +1,82 @@
-================================================================================
-INPUT STAGE (Galvanic Isolation)
-================================================================================
-VEHICLE COIL (-) 
+====================================================================================================
+           COMPLETE 1962 SUN TACHOMETER ADAPTER SCHEMATIC (8-CYLINDER / 10,000 RPM)
+====================================================================================================
+
+[1. POWER SUPPLY STAGE]
+-----------------------
+VEHICLE +12V (Switched Ignition)
        │
        ▼
- [ R1: 4.7kΩ, 2W Resistor ] (DigiKey: CF14JA4K70-ND or equivalent power wirewound)
+  ──►|──  D2: 1N4007 Diode (Stripe toward U2 VIN — blocks reverse polarity)
        │
-       ├──( Anode: Pin 1 )──┐
-       │                    │   [ D1: 1N4007 Diode ] (DigiKey: 4878-1N4007CT-ND)
-       │                [ U1: 4N35 Optocoupler ] (DigiKey: 4N35-ND)
-       │                    │   (Cathode to Pin 2)
-       │                    │
-       └──( Cathode: Pin 2 )┘
-       │
- ENGINE GROUND
+       ├────────────────────────┐
+       │                        ▼
+       │                      ──┴──
+       │                       / \   D3: P6KE18CA TVS Diode (Clamps voltage spikes >18V)
+       │                      /___\
+       │                        │
+       ▼                        │
+  ┌─────────┐                   │
+  │   VIN   │                   │
+  │         │                   │
+  │ Pololu  │                   │
+  │ D24V7F5 │                   │
+  │  (U2)   │                   │
+  │         │                   │
+  │GND  VOUT│                   │
+  └─┬────┬──┘                   │
+    │    │                      │
+    │    └──────────────────────┼───────────────────────► +5V RAIL (To Arduino "5V" Pin & R3)
+    │                           │
+    ▼                           ▼
+  ARDUINO GND                 ARDUINO GND
 
-================================================================================
-ARDUINO MICRO LOGIC SIDE
-================================================================================
- +5V ──── [ R3: 10kΩ, 1/4W Resistor ] (DigiKey: CF14JT10K0-ND) ──── Pin 3 (Tach Input)
-                                                                    Pin 9 (PWM Output) ──> [To RC Filter Below]
 
-================================================================================
-RC LOW-PASS FILTER STAGE & TRIM POTENTIOMETER
-================================================================================
-
- Arduino Pin 9 (PWM) 
-       │
-       ▼
- [ R2: 1.0kΩ, 1/4W Resistor ] (DigiKey: CF14JT1K00-ND)
-       │
-       ├─────────────────────────────────┐ (RC Filter Output / Filtered DC Node)
-       │                                 │
-       ▼                                 ▼
- [ C1: 10µF, 25V Electrolytic Cap ]      ┌─────────────┐
- (DigiKey: 493-13293-1-ND)               │  RV1: 10kΩ  │ (DigiKey: 3296W-103LF-ND)
- (Tied to Arduino GND)                   │  Trim Pot   │
-       │                                 │             │
-       │                                 │ Pin 1 ──────┴── (Connected to RC Filter Output Node)
-       │                                 │ Pin 2 (Wiper) ── (Connected to Sun Tach (+) Terminal)
-       │                                 │ Pin 3 ────────── (Left Open / Unconnected)
-       │                                 └─────────────┘
-       │                                         │
-       └─────────────────────────────────────────┴──────┐
-                                                        │
-                                                        ▼
-                                           (+) SUN TACH GALVANOMETER (-)
-                                                        │
-                                                        ▼
-                                                   ARDUINO GND
+[2. INPUT & OUTPUT STAGES]
+--------------------------
+   ENGINE / IGNITION SIDE                              ARDUINO MICRO & GAUGE SIDE
+ (High-Voltage / Noisy Ground)                        (Isolated 5V Logic & Output)
+===============================            ====================================================
+                                                        +5V RAIL (from D24V7F5 VOUT)
+                                                           │
+                                                           ▼
+                                                     [ R3: 10kΩ ] (1/4W Pull-up)
+                                                           │
+                                                           ├────────► ARDUINO PIN 3 (Tach In)
+                  ┌──────────┬──────────────────┬──────────┘
+                  │          │                  │
+                  │       ┌──┴──────────────────┴──┐                  ┌──────────────────┐
+VEHICLE COIL (-)  │       │  1 (Anode)     5 (Col) │                  │                  │
+       │          │       │                        │                  │  ARDUINO MICRO   │
+       ▼          │       │        U1: 4N35        │                  │                  │
+ [ R1: 4.7kΩ ]    │       │      Optocoupler       │                  │  5V ◄── (+5V)    │
+   (2W Res.)      │       │     (Pin 6 = Open)     │                  │  D3 ◄── (Pin 5)  │
+       │          │       │                        │                  │  D9 ──► (PWM Out)│
+       ├──────────┘       │  2 (Cathode)   4 (Em)  │                  │ GND ─── (GND)    │
+       │                  └──┬──────────────────┬──┘                  └─────────┬────────┘
+       │                     │                  │                               │
+       │  ┌──────────────────┘                  │                               ▼
+       │  │                                     │                         [ R2: 1.0kΩ ]
+       ▼  │ (Stripe/Cathode                     ▼                           (1/4W Res.)
+     ──┴──┘  to Pin 1)                     ARDUINO GND                          │
+      / \    D1: 1N4007                                                         │
+     /___\   (Shunts negative spikes)                                           │
+       │                                                                        │
+       ▼                                           ┌────────────────────────────┘
+ENGINE / CHASSIS GROUND                            │
+(Keep SEPARATE from Arduino GND!)                  ├────────────────────┐
+                                                   │                    ▼
+                                                   ▼              ┌───────────┐
+                                             [ C1: 10µF ]         │ RV1: 10kΩ │ (3296W-103LF)
+                                             (25V Cap, + up)      │ Trim Pot  │
+                                                   │              │           │
+                                                   │              │ Pin 1 ────┴── (From RC Node)
+                                                   │              │ Pin 2 (Wiper) ──► TACH (+)
+                                                   │              │ Pin 3 ────────── (Left Open)
+                                                   │              └───────────┘
+                                                   │                    │
+                                                   ▼                    ▼
+                                             ARDUINO GND          (+) SUN TACH (-)
+                                                                        │
+                                                                        ▼
+                                                                  ARDUINO GND
