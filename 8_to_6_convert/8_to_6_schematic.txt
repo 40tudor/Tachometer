@@ -1,72 +1,133 @@
 ====================================================================================================
-     SUN FZ106N 8-CYLINDER TO 6-CYLINDER (3/4 FREQUENCY) ADAPTER SCHEMATIC
+      CORRECTED PIN-EXPLICIT SCHEMATIC: SUN FZ106N 8-CYL TO 6-CYL (3/4 FREQUENCY) CONVERTER
 ====================================================================================================
 
-[1. POWER SUPPLY STAGE]
------------------------
-VEHICLE +12V (Switched Ignition) ───────┬──────────────────────────► TO TACH "IGNITION SWITCH" STUD
-       │                                │
-       ▼                                ▼
-  ──►|──  D2: 1N4007 Diode (Stripe toward U2 VIN)
-       │
-       ├────────────────────────┐
-       │                        ▼
-       │                      ──┴──
-       │                       / \   D3: P6KE18CA TVS Diode (Clamps voltage spikes >18V)
-       │                      /___\
-       │                        │
-       ▼                        │
-  ┌─────────┐                   │
-  │   VIN   │                   │
-  │ Pololu  │                   │
-  │ D24V7F5 │                   │
-  │  (U2)   │                   │
-  │GND  VOUT│                   │
-  └─┬────┬──┘                   │
-    │    │                      │
-    │    └──────────────────────┼───────────────────────► +5V RAIL (To Arduino "5V" Pin & R3)
-    │                           │
-    ▼                           ▼
-COMMON GROUND ◄─────────────────┴───────────────────────► TO TACH "GROUND" STUD & CHASSIS GND
-
-
-[2. INPUT & 12V SQUARE-WAVE OUTPUT STAGES]
+[1. POWER SUPPLY & SURGE PROTECTION STAGE]
 ------------------------------------------
-                                                        +5V RAIL (from D24V7F5 VOUT)
+VEHICLE +12V (Switched Ignition)
+       │
+       ├───────────────────────────────────────────────────────────► SUN FZ106N: "IGNITION SWITCH" STUD
+       │
+       ▼
+  ┌─────────┐
+  │ Anode   │  D2: 1N4007 Diode (Reverse-polarity protection)
+  │   ──►|──│
+  │ Cathode │  (Striped end)
+  └────┬────┘
+       │
+       ├──────────────────────────────────┐
+       │                                  ▼
+       │                             ┌─────────┐
+       │                             │  Pin 1  │  D3: P6KE18CA Bidirectional TVS Diode
+       │                             │  ──┴──  │  (Clamps ignition load dumps >18V;
+       │                             │   / \   │   non-polarized—either lead to +12V/GND)
+       │                             │  /___\  │
+       │                             │  Pin 2  │
+       │                             └────┬────┘
+       │                                  │
+       ▼                                  │
+  ┌─────────┐                             │
+  │ Pin: VIN│                             │
+  │         │  U2: Pololu D24V7F5         │
+  │         │  (5V, 600mA Buck Module)    │
+  │         │                             │
+  │ Pin: GND│  Pin: VOUT                  │
+  └────┬────┘  └────┬─────────────────────┼────────────────────────► +5V RAIL (To R3 & Arduino "5V")
+       │            │                     │
+       ▼            │                     ▼
+  COMMON GND ◄──────┴─────────────────────┴────────────────────────► SUN FZ106N: "GROUND" STUD
+
+
+[2. GALVANICALLY ISOLATED INPUT STAGE (COIL NEGATIVE TO ARDUINO PIN 3)]
+-----------------------------------------------------------------------
+                                                       +5V RAIL (from Pololu D24V7F5 VOUT)
                                                            │
                                                            ▼
-                                                     [ R3: 10kΩ ] (1/4W Pull-up)
+                                                     ┌───────────┐
+                                                     │   Lead 1  │
+                                                     │ R3: 10kΩ  │ (1/4W Pull-up Resistor)
+                                                     │   Lead 2  │
+                                                     └─────┬─────┘
                                                            │
-                                                           ├────────► ARDUINO PIN 3 (8-Cyl In)
-                  ┌──────────┬──────────────────┬──────────┘
-                  │          │                  │
-                  │       ┌──┴──────────────────┴──┐                  ┌──────────────────┐
-VEHICLE COIL (-)  │       │  1 (Anode)     5 (Col) │                  │                  │
-       │          │       │                        │                  │  ARDUINO MICRO   │
-       ▼          │       │        U1: 4N35        │                  │                  │
- [ R1: 4.7kΩ ]    │       │      Optocoupler       │                  │  5V ◄── (+5V)    │
-   (2W Res.)      │       │     (Pin 6 = Open)     │                  │  D3 ◄── (Pin 5)  │
-       │          │       │                        │                  │  D9 ──► (3/4 Out)│
-       ├──────────┘       │  2 (Cathode)   4 (Em)  │                  │ GND ─── (GND)    │
-       │                  └──┬──────────────────┬──┘                  └─────────┬────────┘
-       │                     │                  │                               │
-       │  ┌──────────────────┘                  │                               ▼
-       │  │                                     │                         [ R2: 1.0kΩ ]
-       ▼  │ (Stripe/Cathode                     ▼                           (Base Res.)
-     ──┴──┘  to Pin 1)                    COMMON GROUND                         │
-      / \    D1: 1N4007                                                         │
-     /___\   (Shunts negative spikes)                                           │
-       │                                      +12V (Switched Ignition)          │
-       ▼                                             │                          │
-COMMON GROUND                                  [ R4: 1.0kΩ ] (1/2W Pull-up)     │
-                                                     │                          │
-                                                     ├──────────────────► TO TACH "DIST." STUD
-                                                     │                          │
-                                                (Collector)                     │
-                                                     │                          ▼
-                                                     ├─────────(Base)─────── Q1: 2N3904
-                                                     │                       (NPN Transistor)
-                                                 (Emitter)
-                                                     │
-                                                     ▼
-                                               COMMON GROUND
+                                                           ├───────► ARDUINO MICRO: Pin D3 (INT0)
+                                                           │
+  VEHICLE COIL (-)                                         │
+         │                                                 │
+         ▼                                                 │
+   ┌───────────┐                                           │
+   │   Lead 1  │                                           │
+   │ R1: 4.7kΩ │                                           │
+   │  (2W Res) │                                           │
+   │   Lead 2  │                                           │
+   └─────┬─────┘                                           │
+         │                                                 │
+         ├───────────────────┐                             │
+         │                   ▼                             │
+         │             ┌───────────┐                       │
+         │             │  Cathode  │ (Striped end)         │
+         │             │   ──┴──   │  D1: 1N4007 Diode     │
+         │             │    / \    │  (Clamps negative     │
+         │             │   /___\   │   coil spikes)        │
+         │             │   Anode   │                       │
+         │             └─────┬─────┘                       │
+         │                   │                             │
+         ▼                   │                             │
+ ┌───────┴───────────────────┴──────────────────┐          │
+ │ Pin 1: LED Anode (Dot)       Pin 6: Base (NC) │          │
+ │                                              │          │
+ │               U1: 4N35 Optocoupler           │          │
+ │              (6-Pin DIP Package)             │          │
+ │                                              │          │
+ │ Pin 2: LED Cathode          Pin 5: Collector ┼──(Tied)──┘
+ │                             Pin 4: Emitter   ┼──► COMMON GND
+ └─────┬───────────────────────┴────────────────┘
+       │
+       ▼
+  COMMON GND (Ties to U1 Pin 2 & D1 Anode)
+
+
+[3. ARDUINO MICRO & 12V SQUARE-WAVE DRIVER STAGE (ARDUINO PIN 9 TO TACH "DIST.")]
+--------------------------------------------------------------------------------
+  ┌─────────────────────────────────┐
+  │       ARDUINO MICRO             │
+  │                                 │
+  │  Pin: 5V  ◄─────────────────────┼── +5V RAIL (from Pololu D24V7F5 VOUT)
+  │  Pin: D3  ◄─────────────────────┼── From 4N35 Pin 5 & R3 Lead 2 (8-Cyl Input)
+  │  Pin: D9  ──► (3/4 Freq Out) ───┼──────┐
+  │  Pin: GND ──► COMMON GND        │      │
+  │  (All other pins: NC / Open)    │      │
+  └─────────────────────────────────┘      │
+                                           │
+                                           │   (Clean path—no connection to U1)
+                                           ▼
+                                     ┌───────────┐
+                                     │   Lead 1  │
+                                     │ R2: 1.0kΩ │ (1/4W Base Current-Limiting Resistor)
+                                     │   Lead 2  │
+                                     └─────┬─────┘
+                                           │
+    VEHICLE +12V (Switched Ignition)       │
+           │                               │
+           ▼                               │
+     ┌───────────┐                         │
+     │   Lead 1  │                         │
+     │ R4: 1.0kΩ │ (1/2W Pull-up Resistor) │
+     │   Lead 2  │                         │
+     └─────┬─────┘                         │
+           │                               │
+           ├───────────────────────────────┼──────────────────────► SUN FZ106N: "DIST." STUD
+           │                               │
+           ▼                               ▼
+     ┌───────────┐                   ┌───────────┐
+     │   Pin 3   │                   │   Pin 2   │
+     │(Collector)│                   │   (Base)  │
+     │           │                   │           │
+     │           └─────────┬─────────┘           │  Q1: 2N3904 NPN Transistor
+     │                     │                     │  (TO-92 Package, flat face toward you:
+     │                 ┌───┴───┐                 │   Left = Pin 1 [E], Center = Pin 2 [B],
+     │                 │ Pin 1 │                 │   Right = Pin 3 [C])
+     │                 │(Emitt)│                 │
+     └─────────────────┴───┬───┴─────────────────┘
+                           │
+                           ▼
+                      COMMON GND

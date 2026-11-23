@@ -1,0 +1,233 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1120 760" width="1120" height="760" style="background-color:#ffffff; font-family: 'Segoe UI', Arial, sans-serif;">
+  <defs>
+    <style>
+      .title { font-size: 18px; font-weight: bold; fill: #111827; }
+      .subtitle { font-size: 13px; fill: #4b5563; }
+      .sec-title { font-size: 13px; font-weight: bold; fill: #1e3a8a; letter-spacing: 0.5px; }
+      .comp-box { fill: #f8fafc; stroke: #1e293b; stroke-width: 2; }
+      .comp-label { font-size: 12px; font-weight: bold; fill: #0f172a; }
+      .comp-sub { font-size: 10.5px; fill: #475569; }
+      .pin-label { font-size: 11px; font-weight: 600; fill: #1e293b; }
+      .net-label { font-size: 10.5px; font-weight: bold; fill: #b91c1c; }
+      .net-5v { font-size: 10.5px; font-weight: bold; fill: #047857; }
+      .wire { fill: none; stroke: #0f172a; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+      .wire-12v { fill: none; stroke: #dc2626; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+      .wire-5v { fill: none; stroke: #059669; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+      .wire-gnd { fill: none; stroke: #334155; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+      .dot { fill: #0f172a; }
+      .dot-12v { fill: #dc2626; }
+      .dot-5v { fill: #059669; }
+      .sec-bg { fill: #f1f5f9; stroke: #cbd5e1; stroke-width: 1; rx: 8; }
+    </style>
+  </defs>
+
+  <!-- Header -->
+  <text x="30" y="34" class="title">SUN MODEL FZ106N — 8-CYLINDER TO 6-CYLINDER (3/4 FREQUENCY) TACHOMETER ADAPTER</text>
+  <text x="30" y="54" class="subtitle">Pin-Explicit Schematic • Arduino Micro + 4N35 Optocoupler + Pololu D24V7F5 + 2N3904 12V Output Driver</text>
+
+  <!-- Section Backgrounds -->
+  <rect x="25" y="70" width="1070" height="205" class="sec-bg"/>
+  <text x="40" y="92" class="sec-title">1. POWER SUPPLY &amp; AUTOMOTIVE SURGE PROTECTION STAGE</text>
+
+  <rect x="25" y="290" width="525" height="445" class="sec-bg"/>
+  <text x="40" y="312" class="sec-title">2. ISOLATED COIL INPUT STAGE (8-CYL)</text>
+
+  <rect x="570" y="290" width="525" height="445" class="sec-bg"/>
+  <text x="585" y="312" class="sec-title">3. ARDUINO MICRO &amp; 12V SQUARE-WAVE DRIVER (6-CYL OUT)</text>
+
+  <!-- ===================================================================== -->
+  <!-- SECTION 1: POWER SUPPLY                                               -->
+  <!-- ===================================================================== -->
+  <!-- Vehicle +12V Input -->
+  <text x="40" y="138" class="net-label">VEHICLE +12V (SWITCHED IGN)</text>
+  <line x1="40" y1="145" x2="270" y2="145" class="wire-12v"/>
+  <circle cx="220" cy="145" r="4" class="dot-12v"/>
+
+  <!-- Branch to Tach Ignition Switch -->
+  <polyline points="220,145 220,115 860,115" class="wire-12v"/>
+  <rect x="860" y="96" width="215" height="40" rx="4" class="comp-box"/>
+  <text x="870" y="114" class="comp-label">SUN FZ106N: "IGNITION SWITCH"</text>
+  <text x="870" y="129" class="comp-sub">Rear Gauge Stud (+12V Supply)</text>
+
+  <!-- D2: 1N4007 -->
+  <rect x="270" y="131" width="90" height="28" class="comp-box"/>
+  <polygon points="300,136 300,154 322,145" fill="#1e293b"/>
+  <line x1="322" y1="136" x2="322" y2="154" stroke="#1e293b" stroke-width="3"/>
+  <text x="272" y="124" class="comp-label">D2: 1N4007</text>
+  <text x="262" y="172" class="pin-label">Anode</text>
+  <text x="328" y="172" class="pin-label">Cathode (Stripe)</text>
+
+  <!-- Protected 12V Node -->
+  <line x1="360" y1="145" x2="530" y2="145" class="wire-12v"/>
+  <circle cx="445" cy="145" r="4" class="dot-12v"/>
+  <text x="385" y="135" class="net-label">PROTECTED_12V</text>
+
+  <!-- D3: P6KE18CA TVS -->
+  <line x1="445" y1="145" x2="445" y2="178" class="wire-12v"/>
+  <rect x="425" y="178" width="40" height="54" class="comp-box"/>
+  <text x="472" y="200" class="comp-label">D3: P6KE18CA</text>
+  <text x="472" y="215" class="comp-sub">Bidirectional TVS (18V)</text>
+  <text x="405" y="188" class="pin-label">Pin 1</text>
+  <text x="405" y="232" class="pin-label">Pin 2</text>
+  <line x1="445" y1="232" x2="445" y2="255" class="wire-gnd"/>
+  <circle cx="445" cy="255" r="4" class="dot"/>
+
+  <!-- U2: Pololu D24V7F5 -->
+  <rect x="530" y="122" width="175" height="92" rx="4" class="comp-box"/>
+  <text x="555" y="144" class="comp-label">U2: Pololu D24V7F5</text>
+  <text x="555" y="160" class="comp-sub">5V, 600mA Buck Regulator</text>
+  <text x="538" y="150" class="pin-label">VIN</text>
+  <text x="662" y="150" class="pin-label">VOUT</text>
+  <text x="602" y="206" class="pin-label">GND</text>
+
+  <!-- U2 GND to Common GND Bus -->
+  <line x1="617" y1="214" x2="617" y2="255" class="wire-gnd"/>
+  <circle cx="617" cy="255" r="4" class="dot"/>
+
+  <!-- +5V Rail Output -->
+  <line x1="705" y1="145" x2="860" y2="145" class="wire-5v"/>
+  <text x="720" y="137" class="net-5v">+5V_RAIL (TO ARDUINO 5V &amp; R3)</text>
+  <rect x="860" y="142" width="215" height="36" rx="4" class="comp-box"/>
+  <text x="870" y="164" class="comp-label">5V_RAIL NODE (U2 VOUT)</text>
+
+  <!-- Common Ground Bus -->
+  <line x1="40" y1="255" x2="860" y2="255" class="wire-gnd"/>
+  <text x="45" y="247" class="comp-label">COMMON_GND BUS (CHASSIS / ARDUINO / OPTO / Q1)</text>
+  <rect x="860" y="232" width="215" height="36" rx="4" class="comp-box"/>
+  <text x="870" y="254" class="comp-label">SUN FZ106N: "GROUND" STUD</text>
+
+  <!-- ===================================================================== -->
+  <!-- SECTION 2: ISOLATED COIL INPUT STAGE                                  -->
+  <!-- ===================================================================== -->
+  <!-- Coil (-) Input -->
+  <text x="40" y="362" class="comp-label">VEHICLE COIL (-)</text>
+  <line x1="40" y1="370" x2="135" y2="370" class="wire"/>
+
+  <!-- R1: 4.7k 2W -->
+  <rect x="135" y="356" width="95" height="28" class="comp-box"/>
+  <text x="145" y="374" class="comp-label">R1: 4.7kΩ (2W)</text>
+  <text x="122" y="350" class="pin-label">Lead 1</text>
+  <text x="205" y="350" class="pin-label">Lead 2</text>
+
+  <!-- Node OPTO_LED_IN -->
+  <line x1="230" y1="370" x2="320" y2="370" class="wire"/>
+  <circle cx="275" cy="370" r="4" class="dot"/>
+  <text x="235" y="340" class="net-label">OPTO_LED_IN</text>
+
+  <!-- D1: 1N4007 Clamp Diode -->
+  <line x1="275" y1="370" x2="275" y2="415" class="wire"/>
+  <rect x="255" y="415" width="40" height="65" class="comp-box"/>
+  <!-- Diode pointing UP (Cathode at top, Anode at bottom) -->
+  <line x1="266" y1="435" x2="284" y2="435" stroke="#1e293b" stroke-width="3"/>
+  <polygon points="266,458 284,458 275,435" fill="#1e293b"/>
+  <text x="165" y="440" class="comp-label">D1: 1N4007</text>
+  <text x="165" y="455" class="comp-sub">Negative Spike Clamp</text>
+  <text x="200" y="424" class="pin-label">Cathode (Stripe)</text>
+  <text x="225" y="478" class="pin-label">Anode</text>
+
+  <!-- U1: 4N35 Optocoupler -->
+  <rect x="320" y="350" width="210" height="175" rx="6" class="comp-box"/>
+  <text x="362" y="374" class="comp-label">U1: 4N35 Optocoupler</text>
+  <text x="385" y="390" class="comp-sub">(6-Pin DIP)</text>
+
+  <!-- Left Pins of 4N35 -->
+  <circle cx="332" cy="370" r="3" fill="#1e293b"/>
+  <text x="340" y="374" class="pin-label">Pin 1: LED Anode</text>
+  <text x="340" y="438" class="pin-label">Pin 2: LED Cathode</text>
+  <text x="340" y="495" class="pin-label">Pin 3: NC (Open)</text>
+
+  <!-- Right Pins of 4N35 -->
+  <text x="435" y="374" class="pin-label">Pin 6: NC (Open)</text>
+  <text x="435" y="438" class="pin-label">Pin 5: Collector</text>
+  <text x="435" y="495" class="pin-label">Pin 4: Emitter</text>
+
+  <!-- U1 Pin 2 & D1 Anode to COMMON_GND -->
+  <line x1="320" y1="434" x2="295" y2="434" stroke="none"/>
+  <polyline points="320,434 305,434 305,545 275,545 275,480" class="wire-gnd"/>
+  <line x1="275" y1="545" x2="275" y2="575" class="wire-gnd"/>
+  <circle cx="275" cy="545" r="4" class="dot"/>
+  <rect x="215" y="575" width="120" height="28" rx="4" class="comp-box"/>
+  <text x="232" y="593" class="comp-label">COMMON_GND</text>
+
+  <!-- U1 Pin 4 Emitter to COMMON_GND -->
+  <polyline points="530,491 540,491 540,589 335,589" class="wire-gnd"/>
+
+  <!-- R3 Pull-Up & Pin 5 Output to Arduino D3 -->
+  <rect x="385" y="615" width="120" height="28" rx="4" class="comp-box"/>
+  <text x="405" y="633" class="net-5v">+5V_RAIL (U2)</text>
+  <line x1="445" y1="643" x2="445" y2="665" class="wire-5v"/>
+
+  <rect x="395" y="665" width="100" height="28" class="comp-box"/>
+  <text x="406" y="683" class="comp-label">R3: 10kΩ (1/4W)</text>
+  <text x="350" y="675" class="pin-label">Lead 1</text>
+  <text x="350" y="702" class="pin-label">Lead 2</text>
+
+  <!-- Collector Pin 5 joins R3 Lead 2 -> Arduino D3 -->
+  <polyline points="530,434 555,434 555,710 445,710 445,693" class="wire"/>
+  <circle cx="555" cy="710" r="4" class="dot"/>
+  <line x1="555" y1="710" x2="600" y2="710" class="wire"/>
+  <text x="462" y="724" class="net-label">ARDUINO_D3_SENSE</text>
+
+  <!-- ===================================================================== -->
+  <!-- SECTION 3: ARDUINO MICRO & 12V DRIVER STAGE                           -->
+  <!-- ===================================================================== -->
+  <!-- Arduino Micro Box -->
+  <rect x="600" y="485" width="185" height="240" rx="6" class="comp-box"/>
+  <text x="635" y="512" class="comp-label">ARDUINO MICRO</text>
+  <text x="648" y="528" class="comp-sub">(ATmega32U4)</text>
+
+  <!-- Arduino Pins -->
+  <text x="612" y="565" class="pin-label">Pin: 5V</text>
+  <line x1="580" y1="561" x2="600" y2="561" class="wire-5v"/>
+  <text x="580" y="553" class="net-5v">+5V_RAIL</text>
+
+  <text x="612" y="635" class="pin-label">Pin: GND</text>
+  <line x1="580" y1="631" x2="600" y2="631" class="wire-gnd"/>
+  <text x="580" y="623" class="comp-sub">COMMON_GND</text>
+
+  <text x="612" y="714" class="pin-label">Pin: D3 (8-Cyl In)</text>
+
+  <text x="662" y="565" class="pin-label">Pin: D9 (3/4 Out)</text>
+  <line x1="785" y1="561" x2="825" y2="561" class="wire"/>
+
+  <!-- R2: 1.0k Base Resistor -->
+  <rect x="825" y="547" width="95" height="28" class="comp-box"/>
+  <text x="835" y="565" class="comp-label">R2: 1.0kΩ</text>
+  <text x="815" y="541" class="pin-label">Lead 1</text>
+  <text x="895" y="541" class="pin-label">Lead 2</text>
+
+  <!-- Wire from R2 Lead 2 to Q1 Base -->
+  <line x1="920" y1="561" x2="965" y2="561" class="wire"/>
+  <text x="922" y="553" class="net-label">Q1_BASE</text>
+
+  <!-- +12V Pullup R4 for DIST. Output -->
+  <rect x="935" y="330" width="140" height="32" rx="4" class="comp-box"/>
+  <text x="945" y="350" class="net-label">VEHICLE +12V (IGN)</text>
+  <line x1="1005" y1="362" x2="1005" y2="390" class="wire-12v"/>
+
+  <rect x="955" y="390" width="100" height="28" class="comp-box"/>
+  <text x="965" y="408" class="comp-label">R4: 1.0kΩ (1/2W)</text>
+  <text x="910" y="400" class="pin-label">Lead 1</text>
+  <text x="910" y="424" class="pin-label">Lead 2</text>
+
+  <!-- Collector Node TACH_DIST_OUT -->
+  <line x1="1005" y1="418" x2="1005" y2="515" class="wire"/>
+  <circle cx="1005" cy="462" r="4" class="dot"/>
+  <polyline points="1005,462 840,462 840,432" class="wire"/>
+  <rect x="785" y="392" width="145" height="40" rx="4" class="comp-box"/>
+  <text x="795" y="410" class="comp-label">SUN FZ106N: "DIST."</text>
+  <text x="795" y="425" class="comp-sub">6-Cyl 12V Square Wave</text>
+
+  <!-- Q1: 2N3904 NPN Transistor -->
+  <rect x="965" y="515" width="115" height="95" rx="6" class="comp-box"/>
+  <text x="980" y="535" class="comp-label">Q1: 2N3904</text>
+  <text x="980" y="549" class="comp-sub">NPN (TO-92)</text>
+  <text x="975" y="527" class="pin-label">Pin 3: Collector</text>
+  <text x="975" y="575" class="pin-label">Pin 2: Base</text>
+  <text x="975" y="602" class="pin-label">Pin 1: Emitter</text>
+
+  <!-- Q1 Emitter to COMMON_GND -->
+  <line x1="1005" y1="610" x2="1005" y2="655" class="wire-gnd"/>
+  <rect x="945" y="655" width="120" height="28" rx="4" class="comp-box"/>
+  <text x="962" y="673" class="comp-label">COMMON_GND</text>
+</svg>
